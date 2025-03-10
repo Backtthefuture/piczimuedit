@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片字幕生成器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>图片字幕生成器</h1>
+        </header>
+        
+        <main>
+            <div class="editor-panel">
+                <section class="upload-section">
+                    <h2>上传图片</h2>
+                    <div class="upload-area">
+                        <label for="imageUpload" class="upload-button">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>选择图片</span>
+                        </label>
+                        <input type="file" id="imageUpload" accept="image/*" hidden>
+                        <p class="file-name">未选择文件</p>
+                    </div>
+                </section>
+                
+                <section class="settings-section">
+                    <h2>字幕设置</h2>
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <label for="captionHeight">字幕高度</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="captionHeight" value="40" min="20" max="200">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="fontSize">字体大小</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="fontSize" value="20" min="10" max="100">
+                                <span class="unit">px</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <label for="fontColor">字体颜色</label>
+                            <div class="color-picker">
+                                <input type="color" id="fontColor" value="#FFFFFF">
+                                <span class="color-value">#FFFFFF</span>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="outlineColor">轮廓颜色</label>
+                            <div class="color-picker">
+                                <input type="color" id="outlineColor" value="#000000">
+                                <span class="color-value">#000000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <label for="fontFamily">字体样式</label>
+                            <div class="select-wrapper">
+                                <select id="fontFamily">
+                                    <option value="system">系统默认</option>
+                                    <option value="serif">衣冠体</option>
+                                    <option value="sans-serif">无衣体</option>
+                                    <option value="monospace">等宽体</option>
+                                    <option value="cursive">手写体</option>
+                                    <option value="fantasy">装饰体</option>
+                                    <option value="PingFang SC">苹方</option>
+                                    <option value="Microsoft YaHei">微软雅黑</option>
+                                    <option value="SimHei">黑体</option>
+                                    <option value="SimSun">宋体</option>
+                                    <option value="KaiTi">楷体</option>
+                                </select>
+                                <span class="select-arrow">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="fontWeight">字体粗细</label>
+                            <div class="select-wrapper">
+                                <select id="fontWeight">
+                                    <option value="normal">正常</option>
+                                    <option value="bold">粗体</option>
+                                </select>
+                                <span class="select-arrow">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="text-section">
+                    <h2>字幕内容</h2>
+                    <textarea id="captionText" rows="5" placeholder="请输入字幕内容，每行将作为一个独立字幕"></textarea>
+                </section>
+                
+                <section class="action-section">
+                    <button id="generateBtn" class="primary-button">生成字幕图片</button>
+                    <button id="saveBtn" class="secondary-button" disabled>保存图片</button>
+                </section>
+            </div>
+            
+            <div class="preview-panel">
+                <h2>预览</h2>
+                <div id="previewContainer">
+                    <div class="no-preview">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                            <path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p>请先上传图片并生成字幕</p>
+                    </div>
+                    <canvas id="previewCanvas"></canvas>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 图片字幕生成器 | 使用HTML5 Canvas技术</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
