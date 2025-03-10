@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="512" height="512" rx="100" fill="#4A6FFF" />
+  
+  <!-- 图片框 -->
+  <rect x="100" y="80" width="312" height="220" rx="20" fill="white" stroke="#1D1D1F" stroke-width="12"/>
+  
+  <!-- 图片中的山和太阳 -->
+  <circle cx="160" cy="140" r="40" fill="#FFD700"/>
+  <path d="M100 300L180 200L240 260L320 160L412 300" fill="#4CAF50" stroke="#1D1D1F" stroke-width="8"/>
+  
+  <!-- 字幕区域 -->
+  <rect x="100" y="320" width="312" height="112" rx="20" fill="white" stroke="#1D1D1F" stroke-width="12"/>
+  
+  <!-- 字幕文本线 -->
+  <line x1="130" y1="350" x2="380" y2="350" stroke="#1D1D1F" stroke-width="8" stroke-linecap="round"/>
+  <line x1="130" y1="390" x2="340" y2="390" stroke="#1D1D1F" stroke-width="8" stroke-linecap="round"/>
+  <line x1="130" y1="430" x2="300" y2="430" stroke="#1D1D1F" stroke-width="8" stroke-linecap="round"/>
+</svg>
