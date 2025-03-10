@@ -40,14 +40,34 @@ imageUpload.addEventListener('change', function(e) {
     
     // 显示文件名
     fileNameDisplay.textContent = file.name;
+    fileNameDisplay.style.display = 'block';
     
     const reader = new FileReader();
     reader.onload = function(event) {
         const img = new Image();
         img.onload = function() {
             originalImage = img;
+            
+            // 立即在画布上预览图片
+            previewCanvas.width = originalImage.width;
+            previewCanvas.height = originalImage.height;
+            ctx.drawImage(originalImage, 0, 0, originalImage.width, originalImage.height);
+            
+            // 显示预览
+            noPreview.style.display = 'none';
+            previewCanvas.style.display = 'block';
+            
+            // 启用生成按钮
+            generateBtn.disabled = false;
+            
+            // 启用保存按钮
+            saveBtn.disabled = false;
+            
+            // 调整预览大小
+            adjustCanvasSize();
+            
             // 显示上传成功提示
-            showToast('图片上传成功！');
+            showToast('图片上传成功！可以添加字幕了', 'success');
         };
         img.src = event.target.result;
     };
