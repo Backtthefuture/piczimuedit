@@ -76,56 +76,37 @@ generateBtn.addEventListener('click', function() {
     // 计算字幕区域总高度（每行高度 * 行数）
     const totalCaptionHeight = height * lines.length;
     
-    // 设置画布尺寸
+    // 设置新画布尺寸（原图高度 + 字幕区域高度）
     previewCanvas.width = originalImage.width;
-    previewCanvas.height = originalImage.height;
+    previewCanvas.height = originalImage.height + totalCaptionHeight;
     
-    // 设置画布尺寸
-    previewCanvas.width = originalImage.width;
-    previewCanvas.height = originalImage.height;
-    
-    // 绘制原始图片
+    // 绘制原始图片到画布上部
     ctx.drawImage(originalImage, 0, 0, originalImage.width, originalImage.height);
     
-    // 计算字幕区域的起始位置
-    const captionStartY = originalImage.height - totalCaptionHeight;
+    // 从原图底部获取一个高度为字幕行高度的切片，作为字幕背景
+    // 创建一个临时画布来存储原图
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = originalImage.width;
+    tempCanvas.height = originalImage.height;
+    const tempCtx = tempCanvas.getContext('2d');
     
-    // 先保存原始图片的副本，用于获取干净的背景图像
-    const originalImageCopy = ctx.getImageData(0, 0, originalImage.width, originalImage.height);
+    // 将原始图片绘制到临时画布
+    tempCtx.drawImage(originalImage, 0, 0, originalImage.width, originalImage.height);
+    
+    // 从原图底部获取切片
+    const bottomSliceY = originalImage.height - height;
+    const bottomSlice = tempCtx.getImageData(0, bottomSliceY, originalImage.width, height);
     
     // 为每行字幕绘制背景和文字
     for (let i = 0; i < lines.length; i++) {
-        // 计算当前字幕行的位置
-        const y = captionStartY + (i * height);
+        // 计算当前字幕行的位置（在原图下方）
+        const y = originalImage.height + (i * height);
         
-        // 如果是多行字幕，对第2行及以后的行进行特殊处理
+        // 将原图底部切片绘制为当前行的背景
+        ctx.putImageData(bottomSlice, 0, y);
+        
+        // 如果不是第一行，添加分割线
         if (i > 0) {
-            // 从原始图片副本中获取干净的背景图像（不包含字幕文字）
-            const firstLineY = captionStartY;
-            const cleanBackgroundData = originalImageCopy.data.slice(0);
-            const cleanBackground = new ImageData(
-                cleanBackgroundData,
-                originalImage.width,
-                originalImage.height
-            );
-            
-            // 将干净的背景图像的相应区域绘制到当前行
-            // 注意：我们需要先将完整的背景图像绘制到一个临时画布，然后取出我们需要的部分
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = originalImage.width;
-            tempCanvas.height = originalImage.height;
-            const tempCtx = tempCanvas.getContext('2d');
-            
-            // 将原始图片绘制到临时画布
-            tempCtx.putImageData(originalImageCopy, 0, 0);
-            
-            // 从临时画布中获取第一行字幕位置的图像数据
-            const firstLineImageData = tempCtx.getImageData(0, firstLineY, originalImage.width, height);
-            
-            // 将干净的背景图像绘制到当前行
-            ctx.putImageData(firstLineImageData, 0, y);
-            
-            // 添加分割线
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(originalImage.width, y);
