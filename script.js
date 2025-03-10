@@ -80,26 +80,31 @@ generateBtn.addEventListener('click', function() {
     previewCanvas.width = originalImage.width;
     previewCanvas.height = originalImage.height;
     
+    // 设置画布尺寸
+    previewCanvas.width = originalImage.width;
+    previewCanvas.height = originalImage.height;
+    
     // 绘制原始图片
     ctx.drawImage(originalImage, 0, 0, originalImage.width, originalImage.height);
     
-    // 获取字幕区域的图像数据（从第一行字幕位置开始）
-    const captionAreaY = originalImage.height - totalCaptionHeight;
-    const captionAreaImage = ctx.getImageData(0, captionAreaY, originalImage.width, totalCaptionHeight);
+    // 计算字幕区域的起始位置
+    const captionStartY = originalImage.height - totalCaptionHeight;
     
     // 为每行字幕绘制背景和文字
     for (let i = 0; i < lines.length; i++) {
-        const y = originalImage.height - totalCaptionHeight + (i * height);
+        // 计算当前字幕行的位置
+        const y = captionStartY + (i * height);
         
-        // 绘制背景（使用第一行字幕位置的图像数据）
-        ctx.putImageData(captionAreaImage, 0, y);
-        
-        // 添加半透明黑色背景，提高文字可读性
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillRect(0, y, originalImage.width, height);
-        
-        // 如果不是第一行，添加分割线
+        // 如果是多行字幕，对第2行及以后的行进行特殊处理
         if (i > 0) {
+            // 获取第一行字幕的背景图像
+            const firstLineY = captionStartY;
+            const firstLineImageData = ctx.getImageData(0, firstLineY, originalImage.width, height);
+            
+            // 将第一行的背景图像绘制到当前行
+            ctx.putImageData(firstLineImageData, 0, y);
+            
+            // 添加分割线
             ctx.beginPath();
             ctx.moveTo(0, y);
             ctx.lineTo(originalImage.width, y);
@@ -107,6 +112,10 @@ generateBtn.addEventListener('click', function() {
             ctx.lineWidth = 1;
             ctx.stroke();
         }
+        
+        // 添加半透明黑色背景，提高文字可读性
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, y, originalImage.width, height);
         
         // 设置文字样式
         ctx.textAlign = 'center';
