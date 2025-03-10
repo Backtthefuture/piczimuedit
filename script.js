@@ -90,6 +90,9 @@ generateBtn.addEventListener('click', function() {
     // 计算字幕区域的起始位置
     const captionStartY = originalImage.height - totalCaptionHeight;
     
+    // 先保存原始图片的副本，用于获取干净的背景图像
+    const originalImageCopy = ctx.getImageData(0, 0, originalImage.width, originalImage.height);
+    
     // 为每行字幕绘制背景和文字
     for (let i = 0; i < lines.length; i++) {
         // 计算当前字幕行的位置
@@ -97,11 +100,29 @@ generateBtn.addEventListener('click', function() {
         
         // 如果是多行字幕，对第2行及以后的行进行特殊处理
         if (i > 0) {
-            // 获取第一行字幕的背景图像
+            // 从原始图片副本中获取干净的背景图像（不包含字幕文字）
             const firstLineY = captionStartY;
-            const firstLineImageData = ctx.getImageData(0, firstLineY, originalImage.width, height);
+            const cleanBackgroundData = originalImageCopy.data.slice(0);
+            const cleanBackground = new ImageData(
+                cleanBackgroundData,
+                originalImage.width,
+                originalImage.height
+            );
             
-            // 将第一行的背景图像绘制到当前行
+            // 将干净的背景图像的相应区域绘制到当前行
+            // 注意：我们需要先将完整的背景图像绘制到一个临时画布，然后取出我们需要的部分
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = originalImage.width;
+            tempCanvas.height = originalImage.height;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // 将原始图片绘制到临时画布
+            tempCtx.putImageData(originalImageCopy, 0, 0);
+            
+            // 从临时画布中获取第一行字幕位置的图像数据
+            const firstLineImageData = tempCtx.getImageData(0, firstLineY, originalImage.width, height);
+            
+            // 将干净的背景图像绘制到当前行
             ctx.putImageData(firstLineImageData, 0, y);
             
             // 添加分割线
